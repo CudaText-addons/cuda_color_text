@@ -1,7 +1,6 @@
 # coding=utf8
 import os
 import json
-import shutil
 import string
 from cudatext import *
 from cudax_lib import html_color_to_int
@@ -13,6 +12,7 @@ HELPER_EXT = '.cuda-colortext'
 NONWORD = ''' \t-+*=/\()[]{}<>"'.,:;~?!@#$%^&|`…'''
 
 if os.path.isfile(ini0) and not os.path.isfile(ini):
+    import shutil
     shutil.copyfile(ini0, ini)
 
 opt_all_words = False
@@ -22,6 +22,7 @@ opt_show_on_map = False
 
 def str_to_bool(s): return s=='1'
 def bool_to_str(v): return '1' if v else '0'
+def bool_to_int(v): return 1 if v else 0
 
 def load_ops():
     global opt_all_words
@@ -33,8 +34,6 @@ def load_ops():
     opt_whole_words  = str_to_bool(ini_read(ini, 'op', 'whole_words'    , '0'))
     opt_case_sens    = str_to_bool(ini_read(ini, 'op', 'case_sensitive' , '0'))
     opt_show_on_map  = str_to_bool(ini_read(ini, 'op', 'show_on_map'    , '0'))
-
-    #print('show_on_map:', opt_show_on_map)
 
 #-----constants
 TAG_UNIQ   = 4000 # must be unique for all ed.attr() plugins
@@ -107,24 +106,35 @@ def do_find_all(ed, text):
     return res
 
 
-def set_sel_attribute(ed, x0, y0, x1, y1, attribs):
+def set_sel_attribute(ed, x0, y0, x1, y1, attr):
 
-    tag, color, bold, italic, strikeout, border, color_border = attribs
+    tag = attr['tag']
+    color_back = attr['c_back']
+    color_font = attr['c_font']
+    color_border = attr['c_border']
+    styles = attr['styles']
+    bold      = 'b' in styles
+    italic    = 'i' in styles
+    strikeout = 's' in styles
+    underline = 'u' in styles
+    border    = 'o' in styles
 
     b_l = b_r = b_d = b_u = 0
     if border:
         b_l = b_r = b_d = b_u = 1
-
-    if bold or italic or strikeout or border:
-        fcolor = COLOR_NONE
-    else:
-        fcolor = ed.get_prop(PROP_COLOR, COLOR_ID_TextFont)
+    elif underline:
+        b_d = 1
 
     def _put(x, y, nlen):
         ed.attr(MARKERS_ADD, tag,
-            x, y, nlen,
-            fcolor, color, color_border,
-            bold, italic, strikeout,
+            x, y,
+            nlen,
+            color_font,
+            color_back,
+            color_border,
+            bool_to_int(bold),
+            bool_to_int(italic),
+            bool_to_int(strikeout),
             b_l, b_r, b_d, b_u,
             show_on_map = opt_show_on_map,
             map_only = (2 if opt_show_on_map else 0)
@@ -148,7 +158,7 @@ def set_sel_attribute(ed, x0, y0, x1, y1, attribs):
         _put(0, y1, x1)
 
 
-def set_text_attribute(ed, attribs):
+def set_text_attribute(ed, attr):
 
     load_ops()
 
@@ -171,7 +181,7 @@ def set_text_attribute(ed, attribs):
             y0 = item[0]
             x1 = x0 + len(word)
             y1 = y0
-            set_sel_attribute(ed, x0, y0, x1, y1, attribs)
+            set_sel_attribute(ed, x0, y0, x1, y1, attr)
         msg_status('Color Text: applied attribute to %d fragment(s)'%len(items))
     else:
         if not is_sel:
@@ -179,38 +189,30 @@ def set_text_attribute(ed, attribs):
         #sort pairs
         if (y0, x0)>(y1, x1):
             x0, y0, x1, y1 = x1, y1, x0, y0
-        set_sel_attribute(ed, x0, y0, x1, y1, attribs)
+        set_sel_attribute(ed, x0, y0, x1, y1, attr)
         msg_status('Color Text: applied attribute to fragment')
 
     # allow on_save call, to save helper file
     ed.set_prop(PROP_MODIFIED, True)
 
 
-def do_color(ed, n):
+def do_color(ed, index):
 
-    color        = COLOR_NONE
-    color_border = COLOR_NONE
-    bold         = 0
-    italic       = 0
-    strikeout    = 0
-    border       = 0
+    items = ini_read(ini, 'colors', str(index), '').split(',')
 
-    st = ini_read(ini, 'colors', str(n), '')
-    if st:
-        color = html_color_to_int(st)
+    color_back = html_color_to_int(items[0]) if len(items)>0 else COLOR_NONE
+    color_font = html_color_to_int(items[1]) if len(items)>1 else COLOR_NONE
+    color_border = html_color_to_int(items[2]) if len(items)>2 else COLOR_NONE
+    styles = items[3] if len(items)>3 else ''
 
-    st = ini_read(ini, 'border_colors', str(n), '')
-    if st:
-        color_border = html_color_to_int(st)
-
-    st = ini_read(ini, 'styles', str(n), '')
-    if st:
-        if 'b' in st: bold      = 1
-        if 'i' in st: italic    = 1
-        if 'u' in st: border    = 1
-        if 's' in st: strikeout = 1
-
-    set_text_attribute(ed, [TAG_UNIQ + n, color, bold, italic, strikeout, border, color_border])
+    attr = {
+        'tag': TAG_UNIQ + index,
+        'c_font': color_font,
+        'c_back': color_back,
+        'c_border': color_border,
+        'styles': styles,
+    }
+    set_text_attribute(ed, attr)
 
 
 def clear_style(ed, n):
@@ -335,26 +337,28 @@ class Command:
     def color5(self): do_color(ed, 5)
     def color6(self): do_color(ed, 6)
 
+    def format_styles(self, styles):
+        attr = {
+            'tag': TAG_UNIQ,
+            'c_font': COLOR_NONE, # ed.get_prop(PROP_COLOR, COLOR_ID_TextFont),
+            'c_back': COLOR_NONE,
+            'c_border': COLOR_NONE,
+            'styles': styles,
+        }
+        set_text_attribute(ed, attr)
+
     def format_bold(self):
-        set_text_attribute(ed, [TAG_UNIQ, COLOR_NONE, 1, 0, 0, 0, COLOR_NONE])
-
+        self.format_styles('b')
     def format_italic(self):
-        set_text_attribute(ed, [TAG_UNIQ, COLOR_NONE, 0, 1, 0, 0, COLOR_NONE])
-
+        self.format_styles('i')
     def format_bold_italic(self):
-        set_text_attribute(ed, [TAG_UNIQ, COLOR_NONE, 1, 1, 0, 0, COLOR_NONE])
-
+        self.format_styles('bi')
     def format_strikeout(self):
-        set_text_attribute(ed, [TAG_UNIQ, COLOR_NONE, 0, 0, 1, 0, COLOR_NONE])
+        self.format_styles('s')
 
     def clear_all(self):
-        clear_style(ed, 0)
-        clear_style(ed, 1)
-        clear_style(ed, 2)
-        clear_style(ed, 3)
-        clear_style(ed, 4)
-        clear_style(ed, 5)
-        clear_style(ed, 6)
+        for i in range(7):
+            clear_style(ed, i)
 
     def clear_sel(self):
         clear_in_selection(ed)
