@@ -196,13 +196,21 @@ def set_text_attribute(ed, attr):
     ed.set_prop(PROP_MODIFIED, True)
 
 
+def item_to_color(l, n):
+
+    if len(l)>n:
+        s = l[n]
+        return html_color_to_int(s) if s else COLOR_NONE
+    else:
+        return COLOR_NONE
+    
 def do_color(ed, index):
 
     items = ini_read(ini, 'colors', str(index), '').split(',')
 
-    color_back = html_color_to_int(items[0]) if len(items)>0 else COLOR_NONE
-    color_font = html_color_to_int(items[1]) if len(items)>1 else COLOR_NONE
-    color_border = html_color_to_int(items[2]) if len(items)>2 else COLOR_NONE
+    color_back = item_to_color(items, 0)
+    color_font = item_to_color(items, 1)
+    color_border = item_to_color(items, 2)
     styles = items[3] if len(items)>3 else ''
 
     attr = {
