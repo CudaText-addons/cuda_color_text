@@ -19,7 +19,7 @@ Section [colors] contains keys "1" to "6" to define attributes for commands
 "Apply style 1" ... "Apply style 6". Format of each value: few comma-separated
 strings: color_background,color_font,color_border,font_styles
 
-- 'color_*' is empty of HTML color token like #aabbcc or #abc.
+- 'color_*' is empty or HTML color token like #aabbcc or #abc.
 - 'font_styles' is empty or combination of chars:
   'b' for bold
   'i' for italic
