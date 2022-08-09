@@ -31,10 +31,11 @@ strings: color_background,color_font,color_border,font_styles
 Helper file
 -----------
 
-Plugin saves applied attribs to the helper file (*.cuda-colortext) and 
-restores attribs later on file opening. On applying attrib, plugin marks 
-file as "modified", it is Ok, it's needed to save the helper file.
-You can delete that helper file, to forget about all added attribs.
+Plugin saves applied attribs to the helper file: <original_filename>.cuda-colortext
+(near the original file) and restores attribs later on file opening.
+On applying attrib, plugin marks file as "modified", it is Ok, it's needed
+to allow saving of the helper file.
+You can delete the helper file, to forget about all added attribs.
 
 
 Authors
