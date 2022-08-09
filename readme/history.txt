@@ -1,4 +1,7 @@
 
+2022.08.09
++ add: code is reworked, and config structure is reworked: now we have single section [colors] to define all attributes; delete sections [border_colors] and [styles] from old config
+
 2022.04.16
 + add: load plugin options on each 'Apply' command call
 - fix: few crashes when plugin is called w/o selection
