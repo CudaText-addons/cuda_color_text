@@ -281,6 +281,7 @@ def load_helper_file(ed):
     load_ops()
 
     for r in res:
+        border = r.get('brd', '')
         ed.attr(MARKERS_ADD,
             tag = r['tag'],
             x = r['x'],
@@ -292,6 +293,10 @@ def load_helper_file(ed):
             font_bold = 1 if r['f_b'] else 0,
             font_italic = 1 if r['f_i'] else 0,
             font_strikeout = 1 if r['f_s'] else 0,
+            border_left = 1 if 'l' in border else 0,
+            border_right = 1 if 'r' in border else 0,
+            border_down = 1 if 'd' in border else 0,
+            border_up = 1 if 'u' in border else 0,
             show_on_map = opt_show_on_map,
             map_only = (2 if opt_show_on_map else 0)
             )
@@ -314,7 +319,8 @@ def save_helper_file(ed):
 
     res = []
     for mark in marks:
-        tag, x, y, len, color_font, color_bg, color_border, font_bold, font_italic, font_strikeout = mark[:10]
+        tag, x, y, len, color_font, color_bg, color_border, font_bold, font_italic, font_strikeout, b_l, b_r, b_d, b_u = mark[:14]
+        border = ('l' if b_l else '') + ('r' if b_r else '') + ('d' if b_d else '') + ('u' if b_u else '')
         if TAG_UNIQ<=tag<=TAG_MAX:
             res.append({
                 'tag': tag,
@@ -327,6 +333,7 @@ def save_helper_file(ed):
                 'f_b': font_bold!=0,
                 'f_i': font_italic!=0,
                 'f_s': font_strikeout!=0,
+                'brd': border,
                 })
 
     if not res:
