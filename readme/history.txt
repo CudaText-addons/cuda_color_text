@@ -1,4 +1,7 @@
 
+2022.08.19
++ add: support translation, patch by Markus
+
 2022.08.09
 + add: code is reworked, and config structure is reworked: now we have single section [colors] to define all attributes; delete sections [border_colors] and [styles] from old config
 
