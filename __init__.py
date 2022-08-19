@@ -1,9 +1,13 @@
-# coding=utf8
+# coding=utf-8
 import os
 import json
 import string
 from cudatext import *
 from cudax_lib import html_color_to_int
+
+from cudax_lib import get_translation
+_ = get_translation(__file__)  # I18N
+
 
 ini = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_color_text.ini')
 ini0 = os.path.join(os.path.dirname(__file__), 'styles.sample.ini')
@@ -166,14 +170,14 @@ def set_text_attribute(ed, attr):
     if not carets:
         return
     if len(carets)>1:
-        return msg_status('Color Text: multi-carets are not supported')
+        return msg_status(_('Color Text: multi-carets are not supported'))
     x0, y0, x1, y1 = carets[0]
     is_sel = y1>=0
 
     if not is_sel and opt_all_words:
         word = _curent_word(ed)
         if not word:
-            return msg_status('Color Text: need a selection or caret on a word')
+            return msg_status(_('Color Text: need a selection or caret on a word'))
 
         items = do_find_all(ed, word)
         for item in items:
@@ -182,15 +186,15 @@ def set_text_attribute(ed, attr):
             x1 = x0 + len(word)
             y1 = y0
             set_sel_attribute(ed, x0, y0, x1, y1, attr)
-        msg_status('Color Text: applied attribute to %d fragment(s)'%len(items))
+        msg_status(_('Color Text: applied attribute to %d fragment(s)') % len(items))
     else:
         if not is_sel:
-            return msg_status('Color Text: need a selection or option all_words=1')
+            return msg_status(_('Color Text: need a selection or option all_words=1'))
         #sort pairs
         if (y0, x0)>(y1, x1):
             x0, y0, x1, y1 = x1, y1, x0, y0
         set_sel_attribute(ed, x0, y0, x1, y1, attr)
-        msg_status('Color Text: applied attribute to fragment')
+        msg_status(_('Color Text: applied attribute to fragment'))
 
     # allow on_save call, to save helper file
     ed.set_prop(PROP_MODIFIED, True)
@@ -233,12 +237,12 @@ def clear_in_selection(ed):
 
     carets = ed.get_carets()
     if len(carets)!=1:
-        msg_status('Need single caret')
+        msg_status(_('Need single caret'))
         return
 
     x1, y1, x2, y2 = carets[0]
     if y2<0:
-        msg_status('No selection')
+        msg_status(_('No selection'))
         return
 
     if (y1, x1)>(y2, x2):
@@ -255,7 +259,7 @@ def clear_in_selection(ed):
             del marks[i]
             cnt += 1
 
-    msg_status('Deleted %d attrib(s)'%cnt)
+    msg_status(_('Deleted %d attrib(s)') % cnt)
     if cnt:
         ed.set_prop(PROP_MODIFIED, True)
 
@@ -301,7 +305,7 @@ def load_helper_file(ed):
             map_only = (2 if opt_show_on_map else 0)
             )
 
-    print('Color Text: restored %d attribs for "%s"' % (len(res), os.path.basename(fn)))
+    print(_('Color Text: restored %d attribs for "%s"') % (len(res), os.path.basename(fn)))
 
 
 def save_helper_file(ed):
