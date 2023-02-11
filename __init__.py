@@ -254,7 +254,7 @@ def clear_in_selection(ed):
 
     cnt = 0
     for i in reversed(range(len(marks))):
-        ntag, nx, ny, nlen, *_ = marks[i]
+        ntag, nx, ny, nlen, *others = marks[i]
         if TAG_UNIQ<=ntag<TAG_MAX and (y1, x1)<=(ny, nx) and (ny, nx+nlen)<=(y2, x2):
             del marks[i]
             cnt += 1
