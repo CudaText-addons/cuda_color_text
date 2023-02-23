@@ -174,7 +174,8 @@ def set_text_attribute(ed, attr):
     x0, y0, x1, y1 = carets[0]
     is_sel = y1>=0
 
-    if not is_sel and opt_all_words:
+    #if not is_sel and opt_all_words:
+    if opt_all_words:
         word = _curent_word(ed)
         if not word:
             return msg_status(_('Color Text: need a selection or caret on a word'))
