@@ -1,4 +1,7 @@
 
+2023.02.23
+- fix: when option "all_words=1", allow to apply style (to all occurrences) even without selection (thanks @d0vgan)
+
 2022.08.19
 + add: support translation, patch by Markus
 
@@ -15,8 +18,8 @@
 * change: ignore option "all_words", when selection is present
 
 2019.10.28
-+ faster detect word-chars
-- fix for changed API in CudaText 1.89
++ add: faster detect word-chars
+- fix: for changed API in CudaText 1.89
 
 2018.08.22
 + add: command "Apply bold+italic"
