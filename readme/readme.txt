@@ -5,8 +5,9 @@ by background color and/or font style (italic/bold/strikeout/underline).
 Configuration
 -------------
 
-To configure, call menu item in the "Options/ Settings-plugins / Color Text"
-to edit config file. Options in section [op] are boolean, values 0/1 for off/on.
+To configure, call menu item in the "Options / Settings-plugins / Color Text"
+to edit the config file in INI format. Options in section [op] are boolean,
+values '0' and '1' (without quotes) for off/on.
 
 - all_words: Colorize all occurrences of fragment.
      When this option is on (ie "all_words=1"), you can just click
@@ -16,11 +17,11 @@ to edit config file. Options in section [op] are boolean, values 0/1 for off/on.
 - show_on_map: Show added colored marks also on micro-map.
 
 Section [colors] contains keys "1" to "6" to define attributes for commands
-"Apply style 1" ... "Apply style 6". Format of each value: few comma-separated
+"Apply style 1" ... "Apply style 6". Format of each value: 4 comma-separated
 strings: color_background,color_font,color_border,font_styles
 
-- 'color_*' is empty or HTML color token like #aabbcc or #abc.
-- 'font_styles' is empty or combination of chars:
+- 'color_*' can be empty for "none color", or can be HTML color token like #AABBCC or #ABC.
+- 'font_styles' can be empty or combination of the following chars:
   'b' for bold
   'i' for italic
   's' for strikeout
@@ -38,9 +39,10 @@ to allow saving of the helper file.
 You can delete the helper file, to forget about all added attribs.
 
 
-Authors
--------
+About
+-----
 
+Authors:
 - Alexey Torgashin (CudaText)
 - Khomutov Roman (@iRamSoft on GitHub)
 License: MIT
