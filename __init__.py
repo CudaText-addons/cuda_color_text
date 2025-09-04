@@ -13,7 +13,7 @@ ini = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_color_text.ini')
 ini0 = os.path.join(os.path.dirname(__file__), 'styles.sample.ini')
 
 HELPER_EXT = '.cuda-colortext'
-NONWORD = ''' \t-+*=/\()[]{}<>"'.,:;~?!@#$%^&|`…'''
+NONWORD = ''' \t-+*=/\\()[]{}<>"'.,:;~?!@#$%^&|`…'''
 
 if os.path.isfile(ini0) and not os.path.isfile(ini):
     import shutil
