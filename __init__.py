@@ -249,26 +249,23 @@ def clear_in_selection(ed):
     if (y1, x1)>(y2, x2):
         x1, y1, x2, y2 = x2, y2, x1, y1
 
-    marks = ed.attr(MARKERS_GET)
+    marks = ed.attr(MARKERS_GET_DICT)
     if not marks:
         return
 
     cnt = 0
-    for i in reversed(range(len(marks))):
-        ntag, nx, ny, nlen, *others = marks[i]
+    for mark in marks:
+        ntag = mark['tag']
+        nx   = mark['x']
+        ny   = mark['y']
+        nlen = mark['len']
         if TAG_UNIQ<=ntag<TAG_MAX and (y1, x1)<=(ny, nx) and (ny, nx+nlen)<=(y2, x2):
-            del marks[i]
+            ed.attr(MARKERS_DELETE_BY_POS, x=nx, y=ny)
             cnt += 1
 
     msg_status(_('Deleted %d attrib(s)') % cnt)
-    if cnt:
+    if cnt>0:
         ed.set_prop(PROP_MODIFIED, True)
-
-        for i in range(TAG_UNIQ, TAG_MAX):
-            ed.attr(MARKERS_DELETE_BY_TAG, tag=i)
-
-        for m in marks:
-            ed.attr(MARKERS_ADD, *m)
 
 
 def load_helper_file(ed):
