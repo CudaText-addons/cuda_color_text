@@ -315,27 +315,29 @@ def save_helper_file(ed):
     if os.path.isfile(fn_res):
         os.remove(fn_res)
 
-    marks = ed.attr(MARKERS_GET)
+    marks = ed.attr(MARKERS_GET_DICT)
     if not marks:
         return
 
     res = []
     for mark in marks:
-        tag, x, y, len, color_font, color_bg, color_border, font_bold, font_italic, font_strikeout, b_l, b_r, b_d, b_u = mark[:14]
-        border = ('l' if b_l else '') + ('r' if b_r else '') + ('d' if b_d else '') + ('u' if b_u else '')
+        tag = mark['tag']
         if TAG_UNIQ<=tag<=TAG_MAX:
             res.append({
                 'tag': tag,
-                'x': x,
-                'y': y,
-                'len': len,
-                'c_font': color_font,
-                'c_bg': color_bg,
-                'c_border': color_border,
-                'f_b': font_bold!=0,
-                'f_i': font_italic!=0,
-                'f_s': font_strikeout!=0,
-                'brd': border,
+                'x': mark['x'],
+                'y': mark['y'],
+                'len': mark['len'],
+                'c_font': mark['color_font'],
+                'c_bg': mark['color_bg'],
+                'c_border': mark['color_border'],
+                'f_b': mark['font_bold']!=0,
+                'f_i': mark['font_italic']!=0,
+                'f_s': mark['font_strikeout']!=0,
+                'brd': ('l' if mark['border_left'] else '') + \
+                       ('r' if mark['border_right'] else '') + \
+                       ('d' if mark['border_down'] else '') + \
+                       ('u' if mark['border_up'] else ''),
                 })
 
     if not res:
