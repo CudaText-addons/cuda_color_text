@@ -1,3 +1,5 @@
+2025.11.19
+- fix: avoid deprecated API: MARKERS_GET
 
 2023.02.23
 - fix: when option "all_words=1", allow to apply style (to all occurrences) even without selection (thanks @d0vgan)
