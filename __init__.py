@@ -140,7 +140,7 @@ def set_sel_attribute(ed, x0, y0, x1, y1, attr):
             bool_to_int(italic),
             bool_to_int(strikeout),
             b_l, b_r, b_d, b_u,
-            show_on_map = opt_show_on_map,
+            show_on_map = (1 if opt_show_on_map else -1),
             map_only = (2 if opt_show_on_map else 0)
             )
 
@@ -299,7 +299,7 @@ def load_helper_file(ed):
             border_right = 1 if 'r' in border else 0,
             border_down = 1 if 'd' in border else 0,
             border_up = 1 if 'u' in border else 0,
-            show_on_map = opt_show_on_map,
+            show_on_map = (1 if opt_show_on_map else -1),
             map_only = (2 if opt_show_on_map else 0)
             )
 
