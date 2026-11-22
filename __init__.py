@@ -270,7 +270,7 @@ def clear_in_selection(ed):
 
 def load_helper_file(ed):
 
-    fn = ed.get_filename()
+    fn = ed.get_prop(PROP_FN, '')
     if not fn: return
 
     fn_res = fn + HELPER_EXT
@@ -308,7 +308,7 @@ def load_helper_file(ed):
 
 def save_helper_file(ed):
 
-    fn = ed.get_filename()
+    fn = ed.get_prop(PROP_FN, '')
     if not fn: return
 
     fn_res = fn + HELPER_EXT

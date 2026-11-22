@@ -1,3 +1,6 @@
+2026.11.21
+- fix: avoid deprecated API: get_filename
+
 2025.11.19
 - fix: avoid deprecated API: MARKERS_GET
 
